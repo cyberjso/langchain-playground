@@ -1,3 +1,7 @@
+"""
+A simple example of using the PromptTemplate from LangChain. It allow to create place
+"""
+
 import logging
 from dotenv import load_dotenv
 from langchain.prompts import PromptTemplate

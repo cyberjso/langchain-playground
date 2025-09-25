@@ -1,3 +1,7 @@
+"""
+A simple example of using the ChatPromptTemplate from LangChain to create a chat prompt for language translation.
+"""
+
 import logging
 
 from langchain.prompts import ChatPromptTemplate

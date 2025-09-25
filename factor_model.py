@@ -1,3 +1,6 @@
+"""
+A simple example of using the Gemini model from LangChain. It provides the hability to implement a factor pattern in order to build multiple agents with different models.
+"""
 import logging
 from langchain.chat_models import init_chat_model
 from dotenv import load_dotenv
