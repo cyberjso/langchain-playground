@@ -1,6 +1,7 @@
 """
 Example of text summarization using LangChain with Google Gemini model.
-By using this technique, It is possible to start the chat with some previsouly given context.
+By using this technique, It is possible to start a chat with some previsouly given context. 
+Depending on the size of the context, it may be necessary to split it into smaller parts and provide to the model a summary instead of the full text, saving tokens and cost on every interaction.
 """
 
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -27,7 +28,7 @@ In the postwar years, the world embarked on a process of reconstruction and reco
 
 model = ChatGoogleGenerativeAI(model = "gemini-2.5-flash", temperature = 0.7)
 
-text_splitter   = RecursiveCharacterTextSplitter(chunk_size = 1000, chunk_overlap = 200)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000, chunk_overlap = 200)
 
 parts = text_splitter.create_documents(long_text)
 
