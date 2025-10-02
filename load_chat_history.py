@@ -38,5 +38,5 @@ config = {"configurable": {"session_id": "demo-session"}}
 response1  = conversational_chain.invoke({"question": "What is the tax rate in New York?"}, config = config)
 logging.info(f"Response 1: {response1.content}")
 
-response2  = conversational_chain.invoke({"question": "How much tax should I pay on a $100,000 salary?"}, config = config)
+response2  = conversational_chain.invoke({"question": "How much tax should I pay on a $100,000?"}, config = config)
 logging.info(f"Response 2: {response2.content}")
