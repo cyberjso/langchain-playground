@@ -1,10 +1,11 @@
 import os
 import logging
 
-from load_pdf_sample import pdf_path_sample
+
 from dotenv import load_dotenv
 from pathlib import Path
-from langchain_community.vectorstores import PGVector
+from load_pdf_sample import pdf_path_sample
+from langchain_postgres import PGVector
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_community.document_loaders import PyPDFLoader
@@ -23,7 +24,7 @@ splitter = RecursiveCharacterTextSplitter(chunk_size = 300, chunk_overlap  = 200
 
 parts = splitter.split_documents(docs)
 
-print(f"Loaded {len(docs)} documents from PDF, split into {len(parts)} parts")
+logger.info(f"Loaded {len(docs)} documents from PDF, split into {len(parts)} parts")
 
 enriched_parts = [
     Document(
@@ -41,7 +42,7 @@ store =  PGVector.from_documents(
     enriched_parts,
     embedding = embeddings,
     collection_name = os.environ["PGVECTOR_COLLECTION"],
-    connection_string = os.environ["PGVECTOR_URL"],
+    connection = os.environ["PGVECTOR_URL"],
     use_jsonb = True
 )
 
