@@ -40,7 +40,6 @@ You must evaluate the applicant's financial health, determine the risk level, an
 
 Generate 3 different reasoning paths step by step to analyze the applicant's creditworthiness based on the provided data.
 At the end, summarize the findings from each path and provide a final recommendation on loan approval, structure, or denial based on the most consistent insights across the paths.
-
 """
 
 model = ChatOpenAI(model="gpt-4o", temperature=0)
