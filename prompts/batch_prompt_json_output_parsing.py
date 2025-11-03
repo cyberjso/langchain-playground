@@ -3,7 +3,6 @@ This prompt implements the batch prompt in a different approach. It consilidades
 It also parse the output in way the program is able to process the output using a Json structure intead of plain text.
 
 """
-from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers import JsonOutputParser
@@ -59,10 +58,7 @@ You MUST return your entire output as a single, valid JSON object that adheres e
 Analyze ALL {num_messages} messages and return the classification list.
 """
 
-system_message =  SystemMessage(content = system_prompt)
-user_prompt = "here : {question}"
-
-prompt_template = ChatPromptTemplate.from_messages([("system", system_message), ("user", "Here are the customer messages to classify:\n\n{user_questions}")])
+prompt_template = ChatPromptTemplate.from_messages([("system", system_prompt), ("user", "Here are the customer messages to classify:\n\n{user_questions}")])
 model = ChatOpenAI(model = "gpt-4o", temperature = 0)
 
 def __format_batch_input(data: List[dict]):
@@ -73,8 +69,6 @@ def __format_batch_input(data: List[dict]):
         "num_messages": len(data), 
         "format_instructions": format_instructions
     }
-
-chain = (RunnableLambda(__format_batch_input) |  prompt_template | model | parser)
 
 questions = [
     {"question": "My phone line has been completely dead since the storm this morning. I need it fixed right away."},
@@ -126,10 +120,11 @@ questions = [
     {"question": "I'm relocating and need to know which services I can transfer to my new state."},
     {"question": "The delivery date for my new service has changed three times now. What is the guaranteed date?"},
     {"question": "The whole neighborhood is currently without service. Is there an outage map I can check?"},
-    {"question": "I need to cancel my service effective the end of the month."},
+    {"question": "I need to cancel my service effective the end of the month."}
 ]
 
+chain = (RunnableLambda(__format_batch_input) |  prompt_template | model | parser)
 results: BatchClassification = chain.invoke(questions)
-for i, classification in enumerate(results.classifications):
-    print(f"Original Question:\n{classification.original_question}\n")
-    print(f"Area: {classification.assigned_area}\n")
+for i, classification in enumerate(results["classifications"]):
+    print(f"Original Question:\n{classification["original_question"]}\n")
+    print(f"Area: {classification["assigned_area"]}\n")
