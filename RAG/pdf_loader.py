@@ -1,6 +1,6 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from load_pdf_sample import pdf_path_sample
+from RAG.load_pdf_sample import pdf_path_sample
 
 import logging
 

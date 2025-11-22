@@ -4,7 +4,7 @@ import logging
 
 from dotenv import load_dotenv
 from pathlib import Path
-from load_pdf_sample import pdf_path_sample
+from RAG.load_pdf_sample import pdf_path_sample
 from langchain_postgres import PGVector
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
