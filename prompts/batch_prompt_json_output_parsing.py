@@ -128,3 +128,4 @@ results: BatchClassification = chain.invoke(questions)
 for i, classification in enumerate(results["classifications"]):
     print(f"Original Question:\n{classification["original_question"]}\n")
     print(f"Area: {classification["assigned_area"]}\n")
+    
