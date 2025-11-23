@@ -3,6 +3,6 @@ cases:
     input_variables: 
       repository_path: /path/to/sample/repo
       output_format: markdown
-    expected_contains: |
-      - 'Provide a structured report using in markdown format detailing:'
-      - 'Analyze the repository /path/to/sample/repo focusing on the following areas:'
+    assertions:
+    - 'Provide a structured report using in markdown detailing:'
+    - 'Analyze the repository /path/to/sample/repo focusing on the following areas:'

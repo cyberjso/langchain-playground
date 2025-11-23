@@ -3,7 +3,6 @@ from yaml import safe_load
 from typing import Any, Dict, LiteralString
 from pathlib import Path
 
-
 def test_registry_should_be_able_to_load_all_promtps_from(__registry: Dict[str, Any]):
     for agent_name, agent_info in __registry.get("agents", {}).items():
         agent_id = agent_info.get("id")
@@ -55,8 +54,29 @@ def test_security_review_agent_test_cases_load_properly(__registry: Dict[str, An
         for case in cases:
             assert "name" in case, f"Test case missing 'name' for agent {agent_name}"
             assert "input_variables" in case, f"Test case missing 'input_variables' for agent {agent_name}"
-            assert "expected_contains" in case, f"Test case missing 'expected_contains' for agent {agent_name}"
+            assert "assertions" in case, f"Test case missing 'assertions' for agent {agent_name}"
 
+            prompt_file = agent_path / f"{agent_id}.yaml"
+            assert prompt_file.is_file(), f"Prompt file missing for agent {agent_name}: {prompt_file}"
+
+            template = __load_content_from_file(prompt_file)
+            input_vars = case.get("input_variables", {}) or {}
+            try:
+                rendered = template.format(**input_vars)
+            except Exception as e:
+                pytest.fail(f"Failed to render template for agent {agent_name} case {case.get('name')}: {e}")
+
+            expected = case.get("assertions")
+            assert expected is not None, f"'assertions' missing for test case {case.get('name')} of agent {agent_name}"
+
+            assertions = expected if isinstance(expected, (list, tuple)) else [expected]
+            for assertion in assertions:
+                assert assertion in rendered, f"Expected fragment {assertion!r} not found in rendered prompt for agent {agent_name} case {case.get('name')}"
+
+def __load_content_from_file(file_path: Path) -> str:
+    with open(file_path, "r") as f:
+        return f.read()
+    
 def __load_agent_test_cases(agent_path: Path, agent_id: LiteralString) -> Dict[str, Any]:
     test_cases = agent_path / f"{agent_id}-test.yaml"
     
