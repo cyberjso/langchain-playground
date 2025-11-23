@@ -1,0 +1,8 @@
+cases:
+  - name: should_replace_prompt_with_reposistory_path_and_output_format
+    input_variables: 
+      repository_path: /path/to/sample/repo
+      output_format: markdown
+    expected_contains: |
+      - 'Provide a structured report using in markdown format detailing:'
+      - 'Analyze the repository /path/to/sample/repo focusing on the following areas:'

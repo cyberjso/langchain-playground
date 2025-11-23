@@ -1,0 +1,9 @@
+agents:
+
+  github-well-arch-review-security-agent:
+    description: An agent that reviews GitHub repositories for well-architected principles focusing  in the security pillar
+    version: 1.0.0
+    id: security-reviewer
+    path: agents/github-well-arch-review/1.0.0
+    model: gpt5-nano
+    temperature: 0.2
