@@ -1,4 +1,5 @@
 from tempfile import template
+from attr import dataclass
 from langchain_core.output_parsers import JsonOutputParser, StrOutputParser, BaseTransformOutputParser
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
@@ -13,6 +14,14 @@ class EnrichedPromptOutput(BaseModel):
     clarifications: list[str] = Field(..., description="A list of clarifying questions to ask the user.")
     subqueries: list[str] = Field(..., description = "A list of subqueries breaking down the user's request.")
     entities: list[str] = Field(..., description ="A list of entities extracted from the user's input.")
+
+@dataclass
+class ModelQuery():
+    user_query: str
+    system_prompt: str
+    output_parser: BaseTransformOutputParser
+    prompt_parameters: dict[str, str] = None
+
 
 logging.basicConfig(level = logging.INFO) 
 logger = logging.getLogger(__name__)
@@ -70,11 +79,11 @@ def __ask_clarifications(clarifications: list[str]) -> list[str]:
 
     return answers
 
-def __invoke_query_chain(user_query: str, system_prompt: str, model: ChatOpenAI, prompt_parameters: dict, output_parser: BaseTransformOutputParser) -> str:
-    template = ChatPromptTemplate.from_messages(["system", system_prompt, "user",  user_query])
-    enriched_chain  = template | model | output_parser
+def __call_llm(model_query: ModelQuery, model: ChatOpenAI) -> str:
+    template = ChatPromptTemplate.from_messages(["system", model_query.system_prompt, "user",  model_query.user_query])
+    chain  = template | model | model_query.output_parser
 
-    return enriched_chain.invoke(prompt_parameters)
+    return chain.invoke(model_query.prompt_parameters)
 
 def __enrich(iterations: int, model: ChatOpenAI, user_query: str, system_prompt: str, answers: list[str] = [], unanswered_questions: list[str] = []) -> str:
     logger.info(f"Enrichment iteration {iterations + 1}... and {len(unanswered_questions)} unanswered questions.")
@@ -82,7 +91,12 @@ def __enrich(iterations: int, model: ChatOpenAI, user_query: str, system_prompt:
     if iterations == max_enrichment_iterations or len(unanswered_questions) == 0:
         return answers   
 
-    result  = __invoke_query_chain(model =model, user_query = user_query, system_prompt = system_prompt,  prompt_parameters = {"question_text": unanswered_questions}, output_parser = json_parser)
+    result  = __call_llm(model_query = ModelQuery(
+        user_query = user_query,
+        system_prompt = system_prompt,
+        prompt_parameters = {"question_text": unanswered_questions},
+        output_parser = json_parser
+    ), model = model)
     
     clarifications = result.get("clarifications", [])
     if not clarifications:
@@ -95,7 +109,13 @@ def __enrich(iterations: int, model: ChatOpenAI, user_query: str, system_prompt:
 
         return __enrich(iterations = iterations + 1, model  =  model, user_query = current_query, system_prompt = system_prompt, answers = answers, unanswered_questions = clarifications)
 
-result  = __invoke_query_chain(model = model, user_query = user_query, system_prompt = system_prompt,  prompt_parameters = {"question_text": clarification_questions}, output_parser = json_parser)
+result  = __call_llm(model_query = ModelQuery(
+    user_query = user_query,
+    system_prompt = system_prompt,
+    prompt_parameters = {"question_text": clarification_questions},
+    output_parser = json_parser
+), model = model)
+
 unanswered_questions = result.get("clarifications", [])
 if len(unanswered_questions) > 0:
     answers = __enrich(iterations = 0, model =  model, user_query = user_query, system_prompt = system_prompt, unanswered_questions = unanswered_questions)
@@ -103,6 +123,12 @@ if len(unanswered_questions) > 0:
     user_prompt  = "Original request: {original_user_query}\n\nAdditional context:\n{context}" 
 
     context_text = "\n".join([f"- {info}" for info in answers])
-    final_result = __invoke_query_chain(model = model, user_query = user_prompt, system_prompt = new_system_prompt, prompt_parameters = {"original_user_query": user_query, "context": context_text}, output_parser = StrOutputParser())
+
+    final_result = __call_llm(model_query = ModelQuery(
+        user_query = user_prompt,
+        system_prompt = new_system_prompt,
+        prompt_parameters = {"original_user_query": user_query, "context": context_text},
+        output_parser = StrOutputParser()
+    ), model = model)
 
     print(final_result )
