@@ -1,4 +1,5 @@
-from langchain_core.output_parsers import JsonOutputParser
+from tempfile import template
+from langchain_core.output_parsers import JsonOutputParser, StrOutputParser, BaseTransformOutputParser
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from pydantic import BaseModel, Field
@@ -20,7 +21,7 @@ max_enrichment_iterations = 10
 
 model = ChatOpenAI(model_name = "gpt-4", temperature = 0)
 
-output_parser = JsonOutputParser(pydantic_object = EnrichedPromptOutput)
+json_parser = JsonOutputParser(pydantic_object = EnrichedPromptOutput)
 
 user_query = "I want to book a flight from New York to Paris next month for two people."
 
@@ -59,9 +60,7 @@ clarification_questions = "\n".join([f"  {q}" for q in [
     "how many Adults are traveling",
     "How many children are traveling",
     "How many infants are traveling"
-]]) 
-
-output_parser = JsonOutputParser(pydantic_object = EnrichedPromptOutput)
+]])
 
 def __ask_clarifications(clarifications: list[str]) -> list[str]:
     answers = []
@@ -71,25 +70,20 @@ def __ask_clarifications(clarifications: list[str]) -> list[str]:
 
     return answers
 
-def __build_enriched_prompt(user_query: str, system_prompt: str, model: ChatOpenAI, prompt_parameters: dict) -> str:
+def __invoke_query_chain(user_query: str, system_prompt: str, model: ChatOpenAI, prompt_parameters: dict, output_parser: BaseTransformOutputParser) -> str:
     template = ChatPromptTemplate.from_messages(["system", system_prompt, "user",  user_query])
     enriched_chain  = template | model | output_parser
 
     return enriched_chain.invoke(prompt_parameters)
 
-def __build_final_prompt(user_query: str, clarifications: list[str], answers: list[str]) -> str:
-    for question, answer in zip(clarifications, answers):
-        user_query += f" {question} {answer}."
-
-    return user_query
-
 def __enrich(iterations: int, model: ChatOpenAI, user_query: str, system_prompt: str, answers: list[str] = [], unanswered_questions: list[str] = []) -> str:
     logger.info(f"Enrichment iteration {iterations + 1}... and {len(unanswered_questions)} unanswered questions.")
 
     if iterations == max_enrichment_iterations or len(unanswered_questions) == 0:
-        return answers
+        return answers   
+
+    result  = __invoke_query_chain(model =model, user_query = user_query, system_prompt = system_prompt,  prompt_parameters = {"question_text": unanswered_questions}, output_parser = json_parser)
     
-    result  = __build_enriched_prompt(model = model, user_query = user_query, system_prompt = system_prompt,  prompt_parameters = {"question_text": unanswered_questions})
     clarifications = result.get("clarifications", [])
     if not clarifications:
         logger.info("Prompt enrichment complete.")
@@ -101,19 +95,14 @@ def __enrich(iterations: int, model: ChatOpenAI, user_query: str, system_prompt:
 
         return __enrich(iterations = iterations + 1, model  =  model, user_query = current_query, system_prompt = system_prompt, answers = answers, unanswered_questions = clarifications)
 
-result  = __build_enriched_prompt(model = model, user_query = user_query, system_prompt = system_prompt,  prompt_parameters = {"question_text": clarification_questions})
+result  = __invoke_query_chain(model = model, user_query = user_query, system_prompt = system_prompt,  prompt_parameters = {"question_text": clarification_questions}, output_parser = json_parser)
 unanswered_questions = result.get("clarifications", [])
 if len(unanswered_questions) > 0:
     answers = __enrich(iterations = 0, model =  model, user_query = user_query, system_prompt = system_prompt, unanswered_questions = unanswered_questions)
-    rewritten_prompt = ChatPromptTemplate.from_messages([
-        ("system", "Rewrite the information into a single, natural, well-formed question."),
-        ("user", "Original request: {original_user_query}\n\nAdditional context:\n{context}")
-    ])
+    new_system_prompt = "\nUse the following additional context to rewrite the user's original request into a single, natural, well-formed question."
+    user_prompt  = "Original request: {original_user_query}\n\nAdditional context:\n{context}" 
+
     context_text = "\n".join([f"- {info}" for info in answers])
+    final_result = __invoke_query_chain(model = model, user_query = user_prompt, system_prompt = new_system_prompt, prompt_parameters = {"original_user_query": user_query, "context": context_text}, output_parser = StrOutputParser())
 
-    final_result = rewritten_prompt.invoke({
-        "original_user_query": user_query,
-        "context": context_text
-    })
-
-    print(final_result )    
+    print(final_result )
