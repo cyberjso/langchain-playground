@@ -1,0 +1,11 @@
+_type: prompt
+input_vars:
+  - text
+template: |
+  You are an english teacher. Given a sentence below, determine where is the subject.
+  "{text}"
+  Respond ONLY with a json structure like:
+  {{
+    "has_subject": true/false,
+    "subjects": [] (if has_subject is true)
+  }}

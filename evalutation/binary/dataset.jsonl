@@ -1,0 +1,40 @@
+{"inputs": {"text": "The cat sat on the mat."}, "outputs": {"has_subject": true, "subjects": ["The cat"]}, "metadata": {"example_id": 1}}
+{"inputs": {"text": "Running is fun."}, "outputs": {"has_subject": true, "subjects": ["Running"]}, "metadata": {"example_id": 2}}
+{"inputs": {"text": "Went to the store."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 3}}
+{"inputs": {"text": "She loves apples."}, "outputs": {"has_subject": true, "subjects": ["She"]}, "metadata": {"example_id": 4}}
+{"inputs": {"text": "Is raining outside."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 5}}
+{"inputs": {"text": "The quick brown fox jumps over the lazy dog."}, "outputs": {"has_subject": true, "subjects": ["The quick brown fox"]}, "metadata": {"example_id": 6}}
+{"inputs": {"text": "A beautiful day."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 7}}
+{"inputs": {"text": "He is a good boy."}, "outputs": {"has_subject": true, "subjects": ["He"]}, "metadata": {"example_id": 8}}
+{"inputs": {"text": "Walking in the park."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 9}}
+{"inputs": {"text": "They are playing football."}, "outputs": {"has_subject": true, "subjects": ["They"]}, "metadata": {"example_id": 10}}
+{"inputs": {"text": "The flowers are blooming."}, "outputs": {"has_subject": true, "subjects": ["The flowers"]}, "metadata": {"example_id": 11}}
+{"inputs": {"text": "A sunny afternoon."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 12}}
+{"inputs": {"text": "John and Mary went to the park."}, "outputs": {"has_subject": true, "subjects": ["John and Mary"]}, "metadata": {"example_id": 13}}
+{"inputs": {"text": "Is a wonderful idea."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 14}}
+{"inputs": {"text": "The dog barked loudly."}, "outputs": {"has_subject": true, "subjects": ["The dog"]}, "metadata": {"example_id": 15}}
+{"inputs": {"text": "A delicious cake."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 16}}
+{"inputs": {"text": "She sings beautifully."}, "outputs": {"has_subject": true, "subjects": ["She"]}, "metadata": {"example_id": 17}}
+{"inputs": {"text": "Went to the park yesterday."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 18}}
+{"inputs": {"text": "The sun rises in the east."}, "outputs": {"has_subject": true, "subjects": ["The sun"]}, "metadata": {"example_id": 19}}
+{"inputs": {"text": "A bright morning."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 20}}
+{"inputs": {"text": "He is reading a book."}, "outputs": {"has_subject": true, "subjects": ["He"]}, "metadata": {"example_id": 21}}
+{"inputs": {"text": "Is a great opportunity."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 22}}
+{"inputs": {"text": "The children are playing in the garden."}, "outputs": {"has_subject": true, "subjects": ["The children"]}, "metadata": {"example_id": 23}}
+{"inputs": {"text": "A beautiful sunset."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 24}}
+{"inputs": {"text": "She is my best friend."}, "outputs": {"has_subject": true, "subjects": ["She"]}, "metadata": {"example_id": 25}}
+{"inputs": {"text": "Is very important to learn."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 26}}
+{"inputs": {"text": "The boy runs fast."}, "outputs": {"has_subject": true, "subjects": ["The boy"]}, "metadata": {"example_id": 27}}
+{"inputs": {"text": "A rainy day."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 28}}
+{"inputs": {"text": "He is a teacher."}, "outputs": {"has_subject": true, "subjects": ["He"]}, "metadata": {"example_id": 29}}
+{"inputs": {"text": "Is a challenging task."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 30}}
+{"inputs": {"text": "The bird is singing."}, "outputs": {"has_subject": true, "subjects": ["The bird"]}, "metadata": {"example_id": 31}}
+{"inputs": {"text": "A quiet evening."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 32}}
+{"inputs": {"text": "She has a beautiful voice."}, "outputs": {"has_subject": true, "subjects": ["She"]}, "metadata": {"example_id": 33}}
+{"inputs": {"text": "Went to the beach last weekend."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 34}}
+{"inputs": {"text": "The stars are shining brightly."}, "outputs": {"has_subject": true, "subjects": ["The stars"]}, "metadata": {"example_id": 35}}
+{"inputs": {"text": "A cold winter night."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 36}}
+{"inputs": {"text": "He is very happy."}, "outputs": {"has_subject": true, "subjects": ["He"]}, "metadata": {"example_id": 37}}
+{"inputs": {"text": "Is a wonderful experience."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 38}}
+{"inputs": {"text": "The girl is dancing gracefully."}, "outputs": {"has_subject": true, "subjects": ["The girl"]}, "metadata": {"example_id": 39}}
+{"inputs": {"text": "A peaceful morning."}, "outputs": {"has_subject": false, "subjects": []}, "metadata": {"example_id": 40}}
